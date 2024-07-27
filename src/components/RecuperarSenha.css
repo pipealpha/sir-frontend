@@ -1,0 +1,19 @@
+.recuperar-senha-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .recuperar-senha-form {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    margin: auto;
+  }
+  
+  .recuperar-senha-form .form-group {
+    text-align: left;
+  }
+  

@@ -1,0 +1,29 @@
+.dashboard {
+    margin-top: 20px;
+  }
+  
+  .custom-card {
+    margin: 20px;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .custom-card i {
+    font-size: 2rem;
+    margin-right: 10px;
+  }
+  
+  .custom-card:hover {
+    background-color: #0056b3;
+    color: white;
+  }
+  
+  .custom-card .card-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }

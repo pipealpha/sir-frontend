@@ -1,0 +1,26 @@
+.gerenciar-cursos-container {
+    padding: 20px;
+  }
+  
+  .gerenciar-cursos-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .gerenciar-cursos-container .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .gerenciar-cursos-container .table {
+    margin-top: 20px;
+  }
+  
+  .gerenciar-cursos-container .table th,
+  .gerenciar-cursos-container .table td {
+    text-align: center;
+  }
+  
+  .gerenciar-cursos-container .btn {
+    margin-right: 5px;
+  }
+  

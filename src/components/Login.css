@@ -1,0 +1,31 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+}
+
+.login-container .btn-link {
+  text-decoration: none;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: auto;
+}
+
+.login-form .form-group {
+  text-align: left; /* Alinhar as labels à esquerda */
+}
+
+.btn-group-toggle .btn {
+  flex: 1;
+  margin: 0 5px;
+}

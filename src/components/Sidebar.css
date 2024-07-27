@@ -1,0 +1,38 @@
+.sidebar {
+    background-color: #f8f9fa;
+    height: 100vh;
+    padding-top: 56px; /* Ajuste para colar na barra de navegação */
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease;
+    box-shadow: none; /* Remover sombra */
+  }
+  
+  .sidebar.visible {
+    width: 250px;
+  }
+  
+  .sidebar.collapsed {
+    width: 60px;
+    overflow: hidden;
+  }
+  
+  .sidebar-icon {
+    margin-right: 10px;
+  }
+  
+  .list-group-item {
+    display: flex;
+    align-items: center;
+    padding: 10px; /* Ajuste conforme necessário */
+    white-space: nowrap; /* Para evitar quebra de linha */
+  }
+  
+  .list-group-item .sidebar-icon {
+    margin-right: 10px;
+  }
+  
+  .sidebar.collapsed .list-group-item {
+    justify-content: center;
+  }
+  

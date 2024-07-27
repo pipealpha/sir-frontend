@@ -1,0 +1,43 @@
+.solicitar-ajuste-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .solicitar-ajuste-form {
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  .solicitar-ajuste-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .solicitar-ajuste-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .solicitar-ajuste-form .form-control {
+    border-radius: 5px;
+  }
+  
+  .solicitar-ajuste-form .btn-submit {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .solicitar-ajuste-form .btn-cancel {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #6c757d;
+    color: white;
+  }
+  
