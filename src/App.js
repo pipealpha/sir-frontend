@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import Profile from './components/Profile';
-import SolicitarAjusteMatricula from './components/SolicitarAjusteMatricula';
-import Solicitacoes from './components/Solicitacoes';
-import GerenciarDisciplinas from './components/GerenciarDisciplinas';
-import AnaliseSolicitacoes from './components/AnaliseSolicitacoes';
-import DetalheSolicitacao from './components/DetalheSolicitacao';
-import Login from './components/Login';
-import Cadastro from './components/Cadastro';
-import RecuperarSenha from './components/RecuperarSenha';
-import GerenciarCursos from './components/GerenciarCursos';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import './App.css';
+import Header from './components/layouts/Header';
+import Sidebar from './components/layouts/Sidebar';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Profile from './pages/Profile/Profile';
+import SolicitarAjusteMatricula from './pages/SolicitarAjusteMatricula/SolicitarAjusteMatricula';
+import Solicitacoes from './pages/Solicitacoes/Solicitacoes';
+import GerenciarDisciplinas from './pages/GerenciarDisciplinas/GerenciarDisciplinas';
+import AnaliseSolicitacoes from './pages/AnaliseSolicitacoes/AnaliseSolicitacoes';
+import DetalheSolicitacao from './pages/DetalheSolicitacao/DetalheSolicitacao';
+import Login from './pages/Login/Login';
+import Cadastro from './pages/Cadastro/Cadastro';
+import RecuperarSenha from './pages/RecuperarSenha/RecuperarSenha';
+import GerenciarCursos from './pages/GerenciarCursos/GerenciarCursos';
+import './assets/styles/App.css';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
