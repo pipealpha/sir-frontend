@@ -18,11 +18,15 @@ const Cadastro = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obter a lista de cursos do backend
     const fetchCursos = async () => {
       try {
         const response = await api.get('/cursos');
-        setCursos(response.data);
+        console.log("Cursos recebidos:", response.data);  // Log para verificar os dados recebidos
+        if (Array.isArray(response.data)) {
+          setCursos(response.data);
+        } else {
+          console.error("Os dados recebidos não são uma lista:", response.data);
+        }
       } catch (error) {
         console.error("Erro ao obter cursos", error);
       }
@@ -108,7 +112,7 @@ const Cadastro = () => {
               onChange={(e) => setCursoId(e.target.value)}
             >
               <option value="">Selecione um curso</option>
-              {cursos.map((curso) => (
+              {Array.isArray(cursos) && cursos.map((curso) => (
                 <option key={curso.id_curso} value={curso.id_curso}>
                   {curso.nome}
                 </option>
