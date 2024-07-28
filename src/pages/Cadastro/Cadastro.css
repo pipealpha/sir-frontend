@@ -1,23 +1,22 @@
 .cadastro-container {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .cadastro-container h2 {
-    margin-bottom: 20px;
-  }
-  
-  .cadastro-form {
-    width: 100%;
-    max-width: 600px; /* Aumentar a largura máxima */
-    padding: 15px;
-    margin: auto;
-  }
-  
-  .cadastro-form .form-group {
-    text-align: left; /* Alinhar as labels à esquerda */
-  }
-  
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cadastro-container h2 {
+  margin-bottom: 20px;
+}
+
+.cadastro-form {
+  width: 100%;
+  max-width: 600px; /* Aumentar a largura máxima */
+  padding: 15px;
+  margin: auto;
+}
+
+.cadastro-form .form-group {
+  text-align: left; /* Alinhar as labels à esquerda */
+}
