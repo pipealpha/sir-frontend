@@ -16,9 +16,7 @@ const Login = ({ setRole }) => {
 
     try {
       const response = await api.post('/auth/login', { email, password });
-      console.log('API response:', response.data); // Log de depuração
       const { perfil } = response.data;
-      console.log('Perfil recebido:', perfil); // Log de depuração
       if (perfil !== selectedRole) {
         setError('Perfil inválido.');
       } else {
@@ -27,7 +25,6 @@ const Login = ({ setRole }) => {
       }
     } catch (error) {
       setError('Login ou senha inválidos.');
-      console.log('Error:', error); // Log de depuração
     }
   };
 
