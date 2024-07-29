@@ -41,7 +41,7 @@ const AnaliseSolicitacoes = ({ role }) => {
         <th>Nome do Estudante</th>
         <th>Tipo de Solicitação</th>
         <th>Status</th>
-        {role === 'raci' && <th>Status SIGAA</th>}
+        {role === 'RACI' && <th>Status SIGAA</th>}
         <th>Data da Solicitação</th>
         <th>Ações</th>
       </tr>
@@ -50,7 +50,7 @@ const AnaliseSolicitacoes = ({ role }) => {
 
   const renderTableRows = () => (
     solicitacoes
-      .filter(solicitacao => role !== 'raci' || solicitacao.status === 'Deferido')
+      .filter(solicitacao => role !== 'RACI' || solicitacao.status === 'Deferido')
       .map((solicitacao) => (
         <tr key={solicitacao.id}>
           <td>{solicitacao.codigoDisciplina}</td>
@@ -58,7 +58,7 @@ const AnaliseSolicitacoes = ({ role }) => {
           <td>{solicitacao.nomeEstudante}</td>
           <td>{solicitacao.tipoSolicitacao}</td>
           <td>{solicitacao.status}</td>
-          {role === 'raci' && <td>{solicitacao.statusSigaa}</td>}
+          {role === 'RACI' && <td>{solicitacao.statusSigaa}</td>}
           <td>{solicitacao.dataSolicitacao}</td>
           <td>
             <Button

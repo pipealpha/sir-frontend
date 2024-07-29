@@ -50,7 +50,7 @@ const Cadastro = () => {
 
     try {
       const usuarioResponse = await api.post('/usuarios', { nome, email, senha, perfil: 'Estudante' });
-      await api.post('/estudantes', {
+      await api.post('/Estudantes', {
         matricula,
         ano_semestre_ingresso: anoSemestre,
         usuario: usuarioResponse.data,

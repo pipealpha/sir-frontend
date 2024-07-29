@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Alert, ButtonGroup } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../../api';
 import './Login.css';
 
-const users = [
-  { login: 'estudante', password: '123', role: 'estudante' },
-  { login: 'coordenador', password: '123', role: 'coordenador' },
-  { login: 'raci', password: '123', role: 'raci' }
-];
-
 const Login = ({ setRole }) => {
-  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState('estudante'); // Estado para o perfil selecionado
+  const [selectedRole, setSelectedRole] = useState('Estudante');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const user = users.find((user) => user.login === login && user.password === password && user.role === selectedRole);
-    if (user) {
-      setRole(user.role);
-      navigate('/dashboard');
-    } else {
-      setError('Login, senha ou perfil inválidos.');
+
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      console.log('API response:', response.data); // Log de depuração
+      const { perfil } = response.data;
+      console.log('Perfil recebido:', perfil); // Log de depuração
+      if (perfil !== selectedRole) {
+        setError('Perfil inválido.');
+      } else {
+        setRole(perfil);
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      setError('Login ou senha inválidos.');
+      console.log('Error:', error); // Log de depuração
     }
   };
 
@@ -33,13 +37,13 @@ const Login = ({ setRole }) => {
         <h2>Sistema Integrado de Requerimentos</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formLogin" className="form-group">
-            <Form.Label>Login</Form.Label>
+          <Form.Group controlId="formEmail" className="form-group">
+            <Form.Label>Email</Form.Label>
             <Form.Control
-              type="text"
-              placeholder="Digite seu login"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
+              type="email"
+              placeholder="Digite seu email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
 
@@ -57,20 +61,20 @@ const Login = ({ setRole }) => {
             <Form.Label>Selecione o perfil</Form.Label>
             <ButtonGroup toggle className="mb-3 d-flex justify-content-center">
               <Button
-                variant={selectedRole === 'estudante' ? 'primary' : 'outline-primary'}
-                onClick={() => setSelectedRole('estudante')}
+                variant={selectedRole === 'Estudante' ? 'primary' : 'outline-primary'}
+                onClick={() => setSelectedRole('Estudante')}
               >
                 Estudante
               </Button>
               <Button
-                variant={selectedRole === 'coordenador' ? 'primary' : 'outline-primary'}
-                onClick={() => setSelectedRole('coordenador')}
+                variant={selectedRole === 'Coordenador' ? 'primary' : 'outline-primary'}
+                onClick={() => setSelectedRole('Coordenador')}
               >
                 Coordenador
               </Button>
               <Button
-                variant={selectedRole === 'raci' ? 'primary' : 'outline-primary'}
-                onClick={() => setSelectedRole('raci')}
+                variant={selectedRole === 'RACI' ? 'primary' : 'outline-primary'}
+                onClick={() => setSelectedRole('RACI')}
               >
                 RACI
               </Button>

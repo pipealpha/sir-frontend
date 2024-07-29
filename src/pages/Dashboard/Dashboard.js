@@ -11,7 +11,7 @@ function Dashboard({ role }) {
         <p>Sistema Integrado de Requerimentos</p>
       </div>
       <Row className="justify-content-center">
-        {role === 'estudante' && (
+        {role === 'Estudante' && (
           <>
             <Col md={4}>
               <Card className="custom-card text-center" as={Link} to="/solicitar-ajuste">
@@ -33,7 +33,7 @@ function Dashboard({ role }) {
             </Col>
           </>
         )}
-        {role === 'coordenador' && (
+        {role === 'Coordenador' && (
           <>
             <Col md={4}>
               <Card className="custom-card text-center" as={Link} to="/gerenciar-disciplinas">
@@ -55,7 +55,7 @@ function Dashboard({ role }) {
             </Col>
           </>
         )}
-        {role === 'raci' && (
+        {role === 'RACI' && (
           <>
             <Col md={4}>
               <Card className="custom-card text-center" as={Link} to="/gerenciar-cursos">

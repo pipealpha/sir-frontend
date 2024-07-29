@@ -15,7 +15,7 @@ function Profile({ role }) {
 
   useEffect(() => {
     // Simulação para pegar os dados do usuário logado. Ajuste conforme necessário.
-    if (role === 'estudante') {
+    if (role === 'Estudante') {
       setMatricula('202012345');
       setCourse('Engenharia de Software');
       setYear('2020/2');
@@ -59,7 +59,7 @@ function Profile({ role }) {
           />
         </Form.Group>
 
-        {role === 'estudante' && (
+        {role === 'Estudante' && (
           <>
             <Form.Group controlId="formMatricula">
               <Form.Label>Matrícula</Form.Label>

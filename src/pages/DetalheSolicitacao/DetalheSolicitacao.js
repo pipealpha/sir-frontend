@@ -69,12 +69,12 @@ const DetalheSolicitacao = ({ role }) => {
         <Form.Control
           as="textarea"
           rows={3}
-          readOnly={role === 'raci'}
+          readOnly={role === 'RACI'}
           defaultValue={solicitacao.observacaoCoordenador}
         />
       </Form.Group>
       <Row className="mt-4">
-        {role === 'raci' ? (
+        {role === 'RACI' ? (
           <>
             <Col md={6}>
               <Button variant="success" onClick={handleAtualizadoSigaa} className="w-100">Atualizado no SIGAA</Button>

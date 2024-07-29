@@ -8,7 +8,7 @@ function Sidebar({ isVisible, role }) {
   return (
     <div className={`sidebar ${isVisible ? 'visible' : 'collapsed'}`}>
       <ListGroup variant="flush">
-        {role === 'estudante' && (
+        {role === 'Estudante' && (
           <>
             <ListGroup.Item as={Link} to="/solicitar-ajuste">
               <FaClipboardList className="sidebar-icon" />
@@ -20,7 +20,7 @@ function Sidebar({ isVisible, role }) {
             </ListGroup.Item>
           </>
         )}
-        {role === 'coordenador' && (
+        {role === 'Coordenador' && (
           <>
             <ListGroup.Item as={Link} to="/gerenciar-disciplinas">
               <FaChalkboardTeacher className="sidebar-icon" />
@@ -32,7 +32,7 @@ function Sidebar({ isVisible, role }) {
             </ListGroup.Item>
           </>
         )}
-        {role === 'raci' && (
+        {role === 'RACI' && (
           <>
             <ListGroup.Item as={Link} to="/gerenciar-cursos">
               <FaUserGraduate className="sidebar-icon" />
