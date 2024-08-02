@@ -21,7 +21,6 @@ const Cadastro = () => {
     const fetchCursos = async () => {
       try {
         const response = await api.get('/cursos');
-        console.log("Cursos recebidos:", response.data);  // Log para verificar os dados recebidos
         if (Array.isArray(response.data)) {
           setCursos(response.data);
         } else {
@@ -50,11 +49,11 @@ const Cadastro = () => {
 
     try {
       const usuarioResponse = await api.post('/usuarios', { nome, email, senha, perfil: 'Estudante' });
-      await api.post('/Estudantes', {
+      await api.post('/estudantes', {
         matricula,
-        ano_semestre_ingresso: anoSemestre,
+        anoSemestreIngresso: anoSemestre,
         usuario: usuarioResponse.data,
-        curso: { id_curso: cursoId }
+        curso: { idCurso: cursoId }
       });
 
       setSuccess("Cadastro realizado com sucesso!");
@@ -113,7 +112,7 @@ const Cadastro = () => {
             >
               <option value="">Selecione um curso</option>
               {Array.isArray(cursos) && cursos.map((curso) => (
-                <option key={curso.id_curso} value={curso.id_curso}>
+                <option key={curso.idCurso} value={curso.idCurso}>
                   {curso.nome}
                 </option>
               ))}

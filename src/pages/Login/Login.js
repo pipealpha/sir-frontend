@@ -11,15 +11,20 @@ const Login = ({ setRole }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { perfil } = response.data;
+      const { perfil, token, estudanteId } = response.data;
+
       if (perfil !== selectedRole) {
         setError('Perfil inválido.');
       } else {
+        // Armazenar o token e estudanteId no localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('estudanteId', estudanteId);
+
         setRole(perfil);
         navigate('/dashboard');
       }
@@ -33,7 +38,7 @@ const Login = ({ setRole }) => {
       <div className="login-form">
         <h2>Sistema Integrado de Requerimentos</h2>
         {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleLogin}>
           <Form.Group controlId="formEmail" className="form-group">
             <Form.Label>Email</Form.Label>
             <Form.Control
