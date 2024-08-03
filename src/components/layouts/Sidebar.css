@@ -1,7 +1,6 @@
 .sidebar {
     background-color: #f8f9fa;
     height: 100vh;
-    padding-top: 56px; /* Ajuste para colar na barra de navegação */
     top: 0;
     left: 0;
     transition: width 0.3s ease;

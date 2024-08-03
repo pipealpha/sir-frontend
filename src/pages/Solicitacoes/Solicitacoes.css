@@ -8,3 +8,25 @@
     margin-bottom: 20px;
   }
   
+  .solicitacoes-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .solicitacoes-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .status-pendente {
+    background-color: orange !important;
+  }
+  
+  .status-indeferido {
+    background-color: red !important;
+  }
+  
+  .status-deferido {
+    background-color: green !important;
+  }
+  

@@ -60,7 +60,6 @@ const Cadastro = () => {
       setError('');
       setTimeout(() => navigate('/'), 2000); // Redirecionar após 2 segundos
     } catch (error) {
-      console.error("Erro ao cadastrar usuário", error);
       setError("Erro ao cadastrar usuário. Tente novamente.");
       setSuccess('');
     }

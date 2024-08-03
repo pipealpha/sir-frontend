@@ -33,6 +33,32 @@ const AnaliseSolicitacoes = ({ role }) => {
     navigate(`/detalhe-solicitacao/${id}`);
   };
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'Pendente':
+      case 'Em análise':
+        return 'status-pendente';
+      case 'Indeferido':
+        return 'status-indeferido';
+      case 'Deferido':
+      case 'Efetuado':
+        return 'status-deferido';
+      default:
+        return '';
+    }
+  };
+
+  const getStatusSigaaClass = (statusSigaa) => {
+    switch (statusSigaa) {
+      case 'Pendente':
+        return 'status-pendente';
+      case 'Efetuado':
+        return 'status-efetuado';
+      default:
+        return '';
+    }
+  };
+
   const renderTableHeader = () => (
     <thead>
       <tr>
@@ -57,8 +83,8 @@ const AnaliseSolicitacoes = ({ role }) => {
           <td>{solicitacao.nomeDisciplina}</td>
           <td>{solicitacao.nomeEstudante}</td>
           <td>{solicitacao.tipoSolicitacao}</td>
-          <td>{solicitacao.status}</td>
-          {role === 'RACI' && <td>{solicitacao.statusSigaa}</td>}
+          <td className={getStatusClass(solicitacao.status)}>{solicitacao.status}</td>
+          {role === 'RACI' && <td className={getStatusSigaaClass(solicitacao.statusSigaa)}>{solicitacao.statusSigaa}</td>}
           <td>{solicitacao.dataSolicitacao}</td>
           <td>
             <Button

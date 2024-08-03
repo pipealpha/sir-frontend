@@ -6,13 +6,12 @@ body, html {
 }
 
 .main-container {
-  margin-top: 56px; /* para compensar a altura do navbar fixo */
+  margin-top: 0px; /* para compensar a altura do navbar fixo */
   padding: 0;
   width: 100%;
 }
 
 #sidebar-wrapper {
-  background-color: #f8f9fa;
   height: 100vh;
   padding: 0;
 }
