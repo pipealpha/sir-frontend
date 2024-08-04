@@ -14,7 +14,7 @@ import Login from './pages/Login/Login';
 import Cadastro from './pages/Cadastro/Cadastro';
 import RecuperarSenha from './pages/RecuperarSenha/RecuperarSenha';
 import GerenciarCursos from './pages/GerenciarCursos/GerenciarCursos';
-import './assets/styles/App.css';
+import './styles/App.css';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
