@@ -19,7 +19,12 @@ const AnaliseSolicitacoes = ({ role }) => {
         console.log("Dados recebidos:", response.data);
 
         if (Array.isArray(data)) {
-          data.sort((a, b) => new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao));
+          // Ordenar por status "Em análise" primeiro e depois por data mais recente
+          data.sort((a, b) => {
+            if (a.statusSolicitacao === 'Em análise' && b.statusSolicitacao !== 'Em análise') return -1;
+            if (a.statusSolicitacao !== 'Em análise' && b.statusSolicitacao === 'Em análise') return 1;
+            return new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao);
+          });
           setSolicitacoes(data);
         } else {
           throw new Error('Dados recebidos não são uma lista');
@@ -80,7 +85,7 @@ const AnaliseSolicitacoes = ({ role }) => {
 
   const renderTableRows = () => (
     solicitacoes
-      .filter(solicitacao => role !== 'RACI' || solicitacao.status === 'Deferido')
+      .filter(solicitacao => role !== 'RACI' || solicitacao.statusSolicitacao === 'Deferido')
       .map((solicitacao) => (
         <tr key={solicitacao.idAjusteMatricula}>
           <td>{solicitacao.disciplina.codigo}</td>
