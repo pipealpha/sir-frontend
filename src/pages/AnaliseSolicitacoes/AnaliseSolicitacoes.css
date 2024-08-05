@@ -22,6 +22,10 @@
   background-color: orange !important; 
 }
 
+.status-efetuado {
+  background-color: green !important;
+}
+
 .status-indeferido {
   background-color: red !important;
 }

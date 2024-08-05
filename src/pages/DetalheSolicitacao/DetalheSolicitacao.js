@@ -30,10 +30,6 @@ const DetalheSolicitacao = ({ role }) => {
     navigate('/analise-solicitacoes');
   };
 
-  const handleAtualizadoSigaa = () => {
-    console.log('Atualizado no SIGAA');
-  };
-
   const handleUpdateStatus = async (status, statusSIGAA = null) => {
     try {
       const updateData = {
@@ -60,6 +56,10 @@ const DetalheSolicitacao = ({ role }) => {
     handleUpdateStatus('Indeferido');
   };
 
+  const handleAtualizadoSigaa = () => {
+    handleUpdateStatus(solicitacao.statusSolicitacao, 'Efetuado');
+  };
+
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('pt-BR', options);
@@ -74,6 +74,7 @@ const DetalheSolicitacao = ({ role }) => {
   }
 
   const isStatusFinal = solicitacao.statusSolicitacao === 'Deferido' || solicitacao.statusSolicitacao === 'Indeferido';
+  const isSigaaFinal = solicitacao.statusSIGAA === 'Efetuado';
 
   return (
     <Container className="detalhe-solicitacao-container">
@@ -101,6 +102,7 @@ const DetalheSolicitacao = ({ role }) => {
           <p><strong>Já fez essa solicitação antes?</strong> {solicitacao.solicitacaoFeitaAnteriormente ? 'Sim' : 'Não'}</p>
           <p><strong>Data da Solicitação:</strong> {formatDate(solicitacao.dataSolicitacao)}</p>
           <p><strong>Status da Solicitação:</strong> {solicitacao.statusSolicitacao}</p>
+          <p><strong>Status SIGAA:</strong> {solicitacao.statusSIGAA}</p>
         </Col>
       </Row>
       <Form.Group controlId="formObservacaoCoordenador" className="mt-4">
@@ -110,14 +112,14 @@ const DetalheSolicitacao = ({ role }) => {
           rows={3}
           value={observacao}
           onChange={(e) => setObservacao(e.target.value)}
-          readOnly={role === 'RACI' || isStatusFinal}
+          readOnly={role === 'RACI' || isStatusFinal || isSigaaFinal}
         />
       </Form.Group>
       <Row className="mt-4">
         {role === 'RACI' ? (
           <>
             <Col md={6}>
-              <Button variant="success" onClick={handleAtualizadoSigaa} className="w-100">Atualizado no SIGAA</Button>
+              <Button variant="success" onClick={handleAtualizadoSigaa} className="w-100" disabled={isSigaaFinal}>Atualizado no SIGAA</Button>
             </Col>
             <Col md={6}>
               <Button variant="secondary" onClick={handleVoltar} className="w-100">Voltar</Button>

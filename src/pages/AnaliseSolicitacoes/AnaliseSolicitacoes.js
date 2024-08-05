@@ -12,19 +12,36 @@ const AnaliseSolicitacoes = ({ role }) => {
   useEffect(() => {
     const fetchSolicitacoes = async () => {
       try {
-        const cursoId = localStorage.getItem('cursoId'); // Assuming you store the course ID in localStorage
-        const response = await api.get(`/ajuste-matricula/curso/${cursoId}`);
+        let response;
+        if (role === 'RACI') {
+          // RACI should get all "Deferido" requests
+          response = await api.get(`/ajuste-matricula/deferido`);
+        } else {
+          // Coordenador gets requests based on their course
+          const cursoId = localStorage.getItem('cursoId');
+          response = await api.get(`/ajuste-matricula/curso/${cursoId}`);
+        }
+        
         const data = response.data;
 
         console.log("Dados recebidos:", response.data);
 
         if (Array.isArray(data)) {
-          // Ordenar por status "Em análise" primeiro e depois por data mais recente
-          data.sort((a, b) => {
-            if (a.statusSolicitacao === 'Em análise' && b.statusSolicitacao !== 'Em análise') return -1;
-            if (a.statusSolicitacao !== 'Em análise' && b.statusSolicitacao === 'Em análise') return 1;
-            return new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao);
-          });
+          if (role === 'RACI') {
+            // Ordenar por statusSIGAA "Pendente" primeiro e depois por data mais recente
+            data.sort((a, b) => {
+              if (a.statusSIGAA === 'Pendente' && b.statusSIGAA !== 'Pendente') return -1;
+              if (a.statusSIGAA !== 'Pendente' && b.statusSIGAA === 'Pendente') return 1;
+              return new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao);
+            });
+          } else {
+            // Ordenar por status "Em análise" primeiro e depois por data mais recente
+            data.sort((a, b) => {
+              if (a.statusSolicitacao === 'Em análise' && b.statusSolicitacao !== 'Em análise') return -1;
+              if (a.statusSolicitacao !== 'Em análise' && b.statusSolicitacao === 'Em análise') return 1;
+              return new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao);
+            });
+          }
           setSolicitacoes(data);
         } else {
           throw new Error('Dados recebidos não são uma lista');
@@ -36,7 +53,7 @@ const AnaliseSolicitacoes = ({ role }) => {
     };
 
     fetchSolicitacoes();
-  }, []);
+  }, [role]);
 
   const handleAnalisarSolicitacao = (id) => {
     navigate(`/detalhe-solicitacao/${id}`);
@@ -84,27 +101,25 @@ const AnaliseSolicitacoes = ({ role }) => {
   );
 
   const renderTableRows = () => (
-    solicitacoes
-      .filter(solicitacao => role !== 'RACI' || solicitacao.statusSolicitacao === 'Deferido')
-      .map((solicitacao) => (
-        <tr key={solicitacao.idAjusteMatricula}>
-          <td>{solicitacao.disciplina.codigo}</td>
-          <td>{solicitacao.disciplina.nome}</td>
-          <td>{solicitacao.estudante?.usuario?.nome}</td>
-          <td>{solicitacao.tipoSolicitacao}</td>
-          <td className={getStatusClass(solicitacao.statusSolicitacao)}>{solicitacao.statusSolicitacao}</td>
-          {role === 'RACI' && <td className={getStatusSigaaClass(solicitacao.statusSIGAA)}>{solicitacao.statusSIGAA}</td>}
-          <td>{new Date(solicitacao.dataSolicitacao).toLocaleDateString()}</td>
-          <td>
-            <Button
-              variant="primary"
-              onClick={() => handleAnalisarSolicitacao(solicitacao.idAjusteMatricula)}
-            >
-              Analisar
-            </Button>
-          </td>
-        </tr>
-      ))
+    solicitacoes.map((solicitacao) => (
+      <tr key={solicitacao.idAjusteMatricula}>
+        <td>{solicitacao.disciplina.codigo}</td>
+        <td>{solicitacao.disciplina.nome}</td>
+        <td>{solicitacao.estudante?.usuario?.nome}</td>
+        <td>{solicitacao.tipoSolicitacao}</td>
+        <td className={getStatusClass(solicitacao.statusSolicitacao)}>{solicitacao.statusSolicitacao}</td>
+        {role === 'RACI' && <td className={getStatusSigaaClass(solicitacao.statusSIGAA)}>{solicitacao.statusSIGAA}</td>}
+        <td>{new Date(solicitacao.dataSolicitacao).toLocaleDateString()}</td>
+        <td>
+          <Button
+            variant="primary"
+            onClick={() => handleAnalisarSolicitacao(solicitacao.idAjusteMatricula)}
+          >
+            Analisar
+          </Button>
+        </td>
+      </tr>
+    ))
   );
 
   return (
