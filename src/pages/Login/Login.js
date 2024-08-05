@@ -16,7 +16,7 @@ const Login = ({ setRole }) => {
 
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { perfil, token, estudanteId } = response.data;
+      const { perfil, token, estudanteId, cursoId } = response.data;
 
       if (perfil !== selectedRole) {
         setError('Perfil inválido.');
@@ -24,6 +24,7 @@ const Login = ({ setRole }) => {
         // Armazenar o token e estudanteId no localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('estudanteId', estudanteId);
+        localStorage.setItem('cursoId', cursoId);
 
         setRole(perfil);
         navigate('/dashboard');

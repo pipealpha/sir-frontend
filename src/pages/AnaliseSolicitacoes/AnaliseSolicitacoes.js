@@ -1,33 +1,37 @@
-import React from 'react';
-import { Table, Button, Container } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Container, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api';
 import './AnaliseSolicitacoes.css';
 
 const AnaliseSolicitacoes = ({ role }) => {
+  const [solicitacoes, setSolicitacoes] = useState([]);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const solicitacoes = [
-    {
-      id: 1,
-      codigoDisciplina: 'MAT101',
-      nomeDisciplina: 'Matemática Básica',
-      nomeEstudante: 'João Silva',
-      tipoSolicitacao: 'Inclusão',
-      status: 'Deferido',
-      statusSigaa: 'Pendente',
-      dataSolicitacao: '2023-07-01',
-    },
-    {
-      id: 2,
-      codigoDisciplina: 'INF101',
-      nomeDisciplina: 'Informática',
-      nomeEstudante: 'Maria Alves',
-      tipoSolicitacao: 'Inclusão',
-      status: 'Indeferido',
-      statusSigaa: 'Pendente',
-      dataSolicitacao: '2023-07-01',
-    },
-  ];
+  useEffect(() => {
+    const fetchSolicitacoes = async () => {
+      try {
+        const cursoId = localStorage.getItem('cursoId'); // Assuming you store the course ID in localStorage
+        const response = await api.get(`/ajuste-matricula/curso/${cursoId}`);
+        const data = response.data;
+
+        console.log("Dados recebidos:", response.data);
+
+        if (Array.isArray(data)) {
+          data.sort((a, b) => new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao));
+          setSolicitacoes(data);
+        } else {
+          throw new Error('Dados recebidos não são uma lista');
+        }
+      } catch (error) {
+        console.error("Erro ao obter solicitações", error);
+        setError('Erro ao obter solicitações. Tente novamente.');
+      }
+    };
+
+    fetchSolicitacoes();
+  }, []);
 
   const handleAnalisarSolicitacao = (id) => {
     navigate(`/detalhe-solicitacao/${id}`);
@@ -78,18 +82,18 @@ const AnaliseSolicitacoes = ({ role }) => {
     solicitacoes
       .filter(solicitacao => role !== 'RACI' || solicitacao.status === 'Deferido')
       .map((solicitacao) => (
-        <tr key={solicitacao.id}>
-          <td>{solicitacao.codigoDisciplina}</td>
-          <td>{solicitacao.nomeDisciplina}</td>
-          <td>{solicitacao.nomeEstudante}</td>
+        <tr key={solicitacao.idAjusteMatricula}>
+          <td>{solicitacao.disciplina.codigo}</td>
+          <td>{solicitacao.disciplina.nome}</td>
+          <td>{solicitacao.estudante?.usuario?.nome}</td>
           <td>{solicitacao.tipoSolicitacao}</td>
-          <td className={getStatusClass(solicitacao.status)}>{solicitacao.status}</td>
-          {role === 'RACI' && <td className={getStatusSigaaClass(solicitacao.statusSigaa)}>{solicitacao.statusSigaa}</td>}
-          <td>{solicitacao.dataSolicitacao}</td>
+          <td className={getStatusClass(solicitacao.statusSolicitacao)}>{solicitacao.statusSolicitacao}</td>
+          {role === 'RACI' && <td className={getStatusSigaaClass(solicitacao.statusSIGAA)}>{solicitacao.statusSIGAA}</td>}
+          <td>{new Date(solicitacao.dataSolicitacao).toLocaleDateString()}</td>
           <td>
             <Button
               variant="primary"
-              onClick={() => handleAnalisarSolicitacao(solicitacao.id)}
+              onClick={() => handleAnalisarSolicitacao(solicitacao.idAjusteMatricula)}
             >
               Analisar
             </Button>
@@ -101,6 +105,7 @@ const AnaliseSolicitacoes = ({ role }) => {
   return (
     <Container className="analise-solicitacoes-container">
       <h2>Análise das Solicitações</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Table striped bordered hover className="mt-4">
         {renderTableHeader()}
         <tbody>
