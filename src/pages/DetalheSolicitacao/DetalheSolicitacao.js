@@ -16,7 +16,7 @@ const DetalheSolicitacao = ({ role }) => {
       try {
         const response = await api.get(`/ajuste-matricula/${id}`);
         setSolicitacao(response.data);
-        setObservacao(response.data.observacaoCoordenador || '');
+        setObservacao(response.data.observacao || '');
       } catch (error) {
         console.error("Erro ao obter detalhes da solicitação", error);
         setError('Erro ao obter detalhes da solicitação. Tente novamente.');
@@ -35,7 +35,7 @@ const DetalheSolicitacao = ({ role }) => {
       const updateData = {
         ...solicitacao,
         statusSolicitacao: status,
-        observacaoCoordenador: observacao,
+        observacao: observacao,
         ...(statusSIGAA && { statusSIGAA }), // Update statusSIGAA if provided
       };
 
