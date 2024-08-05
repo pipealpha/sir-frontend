@@ -11,27 +11,10 @@ const Solicitacoes = () => {
     const fetchSolicitacoes = async () => {
       try {
         const estudanteId = localStorage.getItem('estudanteId');
-        // Comentado o código real para simular dados
-        // const response = await api.get(`/ajuste-matricula/estudante/${estudanteId}`);
-        // const data = response.data;
+        const response = await api.get(`/ajuste-matricula/estudante/${estudanteId}`);
+        const data = response.data;
 
-        // Log para verificar o formato dos dados recebidos
-        //console.log("Dados recebidos:", data);
-
-        // Simulação de dados fixos
-        const data = [
-          {
-            idAjusteMatricula: 1,
-            disciplina: {
-              codigo: 'CPB1463',
-              nome: 'ANÁLISE E PROJETO DE ALGORITMOS'
-            },
-            statusSolicitacao: 'Em análise',
-            dataSolicitacao: '2024-08-02T16:30:04.008+00:00'
-          },
-        ];
-
-        // Verificação mais robusta do formato dos dados recebidos
+        // Verificação do formato dos dados recebidos
         if (Array.isArray(data)) {
           // Ordena as solicitações pela data (mais recente primeiro)
           data.sort((a, b) => new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao));
