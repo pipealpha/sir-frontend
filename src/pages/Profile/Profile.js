@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api';
 import './Profile.css';
 
 function Profile({ role }) {
@@ -11,34 +12,107 @@ function Profile({ role }) {
   const [year, setYear] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulação para pegar os dados do usuário logado. Ajuste conforme necessário.
-    if (role === 'Estudante') {
-      setMatricula('202012345');
-      setCourse('Engenharia de Software');
-      setYear('2020/2');
-    }
-    setName('João Silva');
-    setEmail('joao.silva@example.com');
+    const fetchProfile = async () => {
+      try {
+        let response;
+        const userId = localStorage.getItem('usuarioId'); // Obtendo o id do usuário
+        const token = localStorage.getItem('token'); // Token de autenticação
+        const estudanteId = localStorage.getItem('estudanteId');
+        
+        // Configurar o cabeçalho de autorização
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+
+        if (role === 'Estudante') {
+          response = await api.get(`/estudantes/${estudanteId}`, config);
+          console.log('Estudante data:', response.data);
+          const estudanteData = response.data;
+          if (estudanteData && estudanteData.usuario) {
+            setName(estudanteData.usuario.nome);
+            setEmail(estudanteData.usuario.email);
+            setMatricula(estudanteData.matricula);
+            setCourse(estudanteData.curso.nome);
+            setYear(estudanteData.anoSemestreIngresso);
+          } else {
+            setError('Dados do estudante estão incompletos.');
+          }
+        } else {
+          response = await api.get(`/usuarios/${userId}`, config);
+          console.log('Usuario data:', response.data);
+          const usuarioData = response.data;
+          if (usuarioData) {
+            setName(usuarioData.nome);
+            setEmail(usuarioData.email);
+          } else {
+            setError('Dados do usuário estão incompletos.');
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar perfil", error);
+        setError('Erro ao carregar perfil. Tente novamente.');
+      }
+    };
+
+    fetchProfile();
   }, [role]);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    // Implementar lógica para salvar as informações
-    console.log('Informações salvas:', { name, email, matricula, course, year, password });
+
+    try {
+      const updatedData = {
+        nome: name,
+        email: email,
+        senha: password,
+        confirmarSenha: confirmPassword,
+      };
+
+      if (role === 'Estudante') {
+        updatedData.matricula = matricula;
+        updatedData.curso = course;
+        updatedData.anoSemestreIngresso = year;
+      }
+
+      const userId = localStorage.getItem('usuarioId');
+      const token = localStorage.getItem('token'); // Token de autenticação
+      const estudanteId = localStorage.getItem('estudanteId');
+      
+      // Configurar o cabeçalho de autorização
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
+      if (role === 'Estudante') {
+        await api.put(`/estudantes/${estudanteId}`, updatedData, config);
+      } else {
+        await api.put(`/usuarios/${userId}`, updatedData, config);
+      }
+
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Erro ao salvar perfil", error);
+      setError('Erro ao salvar perfil. Tente novamente.');
+    }
   };
 
   const handleCancel = () => {
-    // Implementar lógica para cancelar as alterações
     navigate('/dashboard');
   };
 
   return (
     <div className="profile-container">
-      <Form className="profile-form">
+      <Form className="profile-form" onSubmit={handleSave}>
         <h2>Perfil</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
         <Form.Group controlId="formName">
           <Form.Label>Nome</Form.Label>
           <Form.Control
@@ -122,7 +196,7 @@ function Profile({ role }) {
           />
         </Form.Group>
 
-        <Button variant="primary" onClick={handleSave} className="mr-2">
+        <Button variant="primary" type="submit" className="mr-2">
           Salvar
         </Button>
         <Button variant="secondary" onClick={handleCancel}>
