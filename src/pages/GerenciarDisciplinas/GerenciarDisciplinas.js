@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Form, Button, Table, Container } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Table, Container, Alert } from 'react-bootstrap';
+import api from '../../api';
 import './GerenciarDisciplinas.css';
 
 const GerenciarDisciplinas = () => {
@@ -7,44 +8,115 @@ const GerenciarDisciplinas = () => {
   const [codigo, setCodigo] = useState('');
   const [nome, setNome] = useState('');
   const [curso, setCurso] = useState('');
+  const [courses, setCourses] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [editCodigo, setEditCodigo] = useState('');
   const [editNome, setEditNome] = useState('');
   const [editCurso, setEditCurso] = useState('');
+  const [error, setError] = useState('');
 
-  const handleAddDisciplina = () => {
-    const novaDisciplina = { codigo, nome, curso };
-    setDisciplinas([...disciplinas, novaDisciplina]);
-    setCodigo('');
-    setNome('');
-    setCurso('');
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchDisciplinas = async () => {
+      try {
+        const cursoId = localStorage.getItem('cursoId');
+        const response = await api.get(`/disciplinas/curso/${cursoId}`);
+        if (isMounted) {
+          setDisciplinas(response.data);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar disciplinas", error);
+        if (isMounted) {
+          setError('Erro ao carregar disciplinas. Tente novamente.');
+        }
+      }
+    };
+
+    const fetchCourses = async () => {
+      try {
+        const cursoId = localStorage.getItem('cursoId');
+        const coursesResponse = await api.get(`/cursos/${cursoId}`);
+        if (isMounted) {
+          setCourses([coursesResponse.data]);
+          setCurso(cursoId);  // Predefine the course to the user's course
+        }
+      } catch (error) {
+        console.error("Erro ao obter cursos", error);
+        if (isMounted) {
+          setError('Erro ao obter cursos. Tente novamente.');
+        }
+      }
+    };
+
+    fetchDisciplinas();
+    fetchCourses();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleAddDisciplina = async () => {
+    const novaDisciplina = { codigo, nome, curso: { idCurso: curso } };
+    try {
+      await api.post('/disciplinas', novaDisciplina);
+      const cursoId = localStorage.getItem('cursoId');
+      const response = await api.get(`/disciplinas/curso/${cursoId}`);
+      setDisciplinas(response.data);
+      setCodigo('');
+      setNome('');
+      setCurso('');
+    } catch (error) {
+      console.error("Erro ao adicionar disciplina", error);
+      setError('Erro ao adicionar disciplina. Tente novamente.');
+    }
   };
 
   const handleEditDisciplina = (index) => {
     setEditIndex(index);
     setEditCodigo(disciplinas[index].codigo);
     setEditNome(disciplinas[index].nome);
-    setEditCurso(disciplinas[index].curso);
+    setEditCurso(disciplinas[index].curso.idCurso);
   };
 
-  const handleSaveDisciplina = (index) => {
-    const updatedDisciplinas = [...disciplinas];
-    updatedDisciplinas[index] = { codigo: editCodigo, nome: editNome, curso: editCurso };
-    setDisciplinas(updatedDisciplinas);
-    setEditIndex(null);
-    setEditCodigo('');
-    setEditNome('');
-    setEditCurso('');
+  const handleSaveDisciplina = async (index) => {
+    const updatedDisciplina = {
+      codigo: editCodigo,
+      nome: editNome,
+      curso: { idCurso: editCurso, nome: disciplinas[index].curso.nome, sigla: disciplinas[index].curso.sigla },
+    };
+    try {
+      await api.put(`/disciplinas/${disciplinas[index].idDisciplina}`, updatedDisciplina);
+      const updatedDisciplinas = [...disciplinas];
+      updatedDisciplinas[index] = updatedDisciplina;
+      setDisciplinas(updatedDisciplinas);
+      setEditIndex(null);
+      setEditCodigo('');
+      setEditNome('');
+      setEditCurso('');
+    } catch (error) {
+      console.error("Erro ao atualizar disciplina", error);
+      setError('Erro ao atualizar disciplina. Tente novamente.');
+    }
   };
 
-  const handleDeleteDisciplina = (index) => {
-    const novasDisciplinas = disciplinas.filter((_, i) => i !== index);
-    setDisciplinas(novasDisciplinas);
+  const handleDeleteDisciplina = async (index) => {
+    try {
+      const disciplinaId = disciplinas[index].idDisciplina;
+      await api.delete(`/disciplinas/${disciplinaId}`);
+      const novasDisciplinas = disciplinas.filter((_, i) => i !== index);
+      setDisciplinas(novasDisciplinas);
+    } catch (error) {
+      console.error("Erro ao excluir disciplina", error);
+      setError('Erro ao excluir disciplina. Tente novamente.');
+    }
   };
 
   return (
     <Container className="gerenciar-disciplinas-container">
       <h2>Gerenciar Disciplinas</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Form>
         <Form.Group controlId="formCodigo">
           <Form.Label>Código da Disciplina</Form.Label>
@@ -58,7 +130,16 @@ const GerenciarDisciplinas = () => {
 
         <Form.Group controlId="formCurso">
           <Form.Label>Curso</Form.Label>
-          <Form.Control type="text" value={curso} onChange={(e) => setCurso(e.target.value)} />
+          <Form.Control
+            as="select"
+            value={curso}
+            onChange={(e) => setCurso(e.target.value)}
+            disabled
+          >
+            {courses.map((course) => (
+              <option key={course.idCurso} value={course.idCurso}>{course.nome}</option>
+            ))}
+          </Form.Control>
         </Form.Group>
 
         <Button variant="primary" onClick={handleAddDisciplina}>
@@ -103,12 +184,17 @@ const GerenciarDisciplinas = () => {
               <td>
                 {editIndex === index ? (
                   <Form.Control
-                    type="text"
+                    as="select"
                     value={editCurso}
                     onChange={(e) => setEditCurso(e.target.value)}
-                  />
+                    disabled
+                  >
+                    {courses.map((course) => (
+                      <option key={course.idCurso} value={course.idCurso}>{course.nome}</option>
+                    ))}
+                  </Form.Control>
                 ) : (
-                  disciplina.curso
+                  disciplina.curso.nome
                 )}
               </td>
               <td>
