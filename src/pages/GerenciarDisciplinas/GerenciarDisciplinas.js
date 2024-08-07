@@ -3,7 +3,7 @@ import { Form, Button, Table, Container, Alert } from 'react-bootstrap';
 import api from '../../api';
 import './GerenciarDisciplinas.css';
 
-const GerenciarDisciplinas = () => {
+const GerenciarDisciplinas = ({ role }) => {
   const [disciplinas, setDisciplinas] = useState([]);
   const [codigo, setCodigo] = useState('');
   const [nome, setNome] = useState('');
@@ -17,13 +17,18 @@ const GerenciarDisciplinas = () => {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchDisciplinas = async () => {
       try {
-        const cursoId = localStorage.getItem('cursoId');
-        const response = await api.get(`/disciplinas/curso/${cursoId}`);
+        let response;
+        if (role === 'RACI') {
+          response = await api.get('/disciplinas');
+        } else {
+          const cursoId = localStorage.getItem('cursoId');
+          response = await api.get(`/disciplinas/curso/${cursoId}`);
+        }
         if (isMounted) {
-          setDisciplinas(response.data);
+          setDisciplinas(Array.isArray(response.data) ? response.data : []);
         }
       } catch (error) {
         console.error("Erro ao carregar disciplinas", error);
@@ -35,11 +40,19 @@ const GerenciarDisciplinas = () => {
 
     const fetchCourses = async () => {
       try {
-        const cursoId = localStorage.getItem('cursoId');
-        const coursesResponse = await api.get(`/cursos/${cursoId}`);
-        if (isMounted) {
-          setCourses([coursesResponse.data]);
-          setCurso(cursoId);  // Predefine the course to the user's course
+        let response;
+        if (role === 'RACI') {
+          response = await api.get('/cursos');
+          if (isMounted) {
+            setCourses(Array.isArray(response.data) ? response.data : []);
+          }
+        } else {
+          const cursoId = localStorage.getItem('cursoId');
+          response = await api.get(`/cursos/${cursoId}`);
+          if (isMounted) {
+            setCourses([response.data]);
+            setCurso(cursoId);
+          }
         }
       } catch (error) {
         console.error("Erro ao obter cursos", error);
@@ -55,15 +68,14 @@ const GerenciarDisciplinas = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [role]);
 
   const handleAddDisciplina = async () => {
     const novaDisciplina = { codigo, nome, curso: { idCurso: curso } };
     try {
       await api.post('/disciplinas', novaDisciplina);
-      const cursoId = localStorage.getItem('cursoId');
-      const response = await api.get(`/disciplinas/curso/${cursoId}`);
-      setDisciplinas(response.data);
+      const response = await api.get(role === 'RACI' ? '/disciplinas' : `/disciplinas/curso/${localStorage.getItem('cursoId')}`);
+      setDisciplinas(Array.isArray(response.data) ? response.data : []);
       setCodigo('');
       setNome('');
       setCurso('');
@@ -134,8 +146,9 @@ const GerenciarDisciplinas = () => {
             as="select"
             value={curso}
             onChange={(e) => setCurso(e.target.value)}
-            disabled
+            disabled={role !== 'RACI'}
           >
+            <option value="">Selecione o curso</option>
             {courses.map((course) => (
               <option key={course.idCurso} value={course.idCurso}>{course.nome}</option>
             ))}
@@ -157,7 +170,7 @@ const GerenciarDisciplinas = () => {
           </tr>
         </thead>
         <tbody>
-          {disciplinas.map((disciplina, index) => (
+          {Array.isArray(disciplinas) && disciplinas.map((disciplina, index) => (
             <tr key={index}>
               <td>
                 {editIndex === index ? (
@@ -187,7 +200,7 @@ const GerenciarDisciplinas = () => {
                     as="select"
                     value={editCurso}
                     onChange={(e) => setEditCurso(e.target.value)}
-                    disabled
+                    disabled={role !== 'RACI'}
                   >
                     {courses.map((course) => (
                       <option key={course.idCurso} value={course.idCurso}>{course.nome}</option>

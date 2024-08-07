@@ -47,7 +47,7 @@ function App() {
                 <Route path="/solicitacoes" element={<Solicitacoes />} />
                 <Route path="/cadastro" element={<Cadastro />} />
                 <Route path="/recuperar-senha" element={<RecuperarSenha />} />
-                <Route path="/gerenciar-disciplinas" element={<GerenciarDisciplinas />} />
+                <Route path="/gerenciar-disciplinas" element={<GerenciarDisciplinas role={role} />} />
                 <Route path="/analise-solicitacoes" element={<AnaliseSolicitacoes role={role} />} />
                 <Route path="/detalhe-solicitacao/:id" element={<DetalheSolicitacao role={role} />} />
                 <Route path="/gerenciar-cursos" element={<GerenciarCursos />} />
