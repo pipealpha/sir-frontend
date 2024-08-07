@@ -1,44 +1,70 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Form, Button, Table, Alert } from 'react-bootstrap';
+import api from '../../api';
 import './GerenciarCursos.css';
 
 const GerenciarCursos = () => {
-  const [cursos, setCursos] = useState([
-    { id: 1, nome: 'Engenharia de Computação', sigla: 'ECO', email: 'eco@ifc.edu' },
-    { id: 2, nome: 'Engenharia de Controle e Automação', sigla: 'ECA', email: 'eca@ifc.edu' }
-  ]);
-
+  const [cursos, setCursos] = useState([]);
   const [novoCurso, setNovoCurso] = useState({ nome: '', sigla: '', email: '' });
   const [editandoCursoId, setEditandoCursoId] = useState(null);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const response = await api.get('/cursos');
+        setCursos(response.data);
+      } catch (error) {
+        console.error('Erro ao carregar cursos', error);
+        setError('Erro ao carregar cursos. Tente novamente.');
+      }
+    };
+
+    fetchCursos();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNovoCurso({ ...novoCurso, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editandoCursoId) {
-      setCursos(cursos.map(curso => curso.id === editandoCursoId ? { ...novoCurso, id: editandoCursoId } : curso));
-      setEditandoCursoId(null);
-    } else {
-      setCursos([...cursos, { ...novoCurso, id: cursos.length + 1 }]);
+    try {
+      if (editandoCursoId) {
+        await api.put(`/cursos/${editandoCursoId}`, novoCurso);
+        setCursos(cursos.map(curso => curso.idCurso === editandoCursoId ? { ...novoCurso, idCurso: editandoCursoId } : curso));
+        setEditandoCursoId(null);
+      } else {
+        const response = await api.post('/cursos', novoCurso);
+        setCursos([...cursos, response.data]);
+      }
+      setNovoCurso({ nome: '', sigla: '', email: '' });
+    } catch (error) {
+      console.error('Erro ao salvar curso', error);
+      setError('Erro ao salvar curso. Tente novamente.');
     }
-    setNovoCurso({ nome: '', sigla: '', email: '' });
   };
 
   const handleEdit = (curso) => {
     setNovoCurso(curso);
-    setEditandoCursoId(curso.id);
+    setEditandoCursoId(curso.idCurso);
   };
 
-  const handleDelete = (id) => {
-    setCursos(cursos.filter(curso => curso.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/cursos/${id}`);
+      setCursos(cursos.filter(curso => curso.idCurso !== id));
+    } catch (error) {
+      console.error('Erro ao excluir curso', error);
+      setError('Erro ao excluir curso. Tente novamente.');
+    }
   };
 
   return (
     <Container className="gerenciar-cursos-container">
       <h2>Gerenciar Cursos</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col md={4}>
@@ -93,13 +119,13 @@ const GerenciarCursos = () => {
         </thead>
         <tbody>
           {cursos.map(curso => (
-            <tr key={curso.id}>
+            <tr key={curso.idCurso}>
               <td>{curso.nome}</td>
               <td>{curso.sigla}</td>
               <td>{curso.email}</td>
               <td>
                 <Button variant="warning" onClick={() => handleEdit(curso)} className="mr-2">Editar</Button>
-                <Button variant="danger" onClick={() => handleDelete(curso.id)}>Excluir</Button>
+                <Button variant="danger" onClick={() => handleDelete(curso.idCurso)}>Excluir</Button>
               </td>
             </tr>
           ))}
