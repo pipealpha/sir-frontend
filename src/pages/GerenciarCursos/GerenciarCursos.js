@@ -5,7 +5,7 @@ import './GerenciarCursos.css';
 
 const GerenciarCursos = () => {
   const [cursos, setCursos] = useState([]);
-  const [novoCurso, setNovoCurso] = useState({ nome: '', sigla: '', email: '' });
+  const [novoCurso, setNovoCurso] = useState({ nome: '', sigla: '', emailCoordenador: '' });
   const [editandoCursoId, setEditandoCursoId] = useState(null);
   const [error, setError] = useState('');
 
@@ -39,7 +39,7 @@ const GerenciarCursos = () => {
         const response = await api.post('/cursos', novoCurso);
         setCursos([...cursos, response.data]);
       }
-      setNovoCurso({ nome: '', sigla: '', email: '' });
+      setNovoCurso({ nome: '', sigla: '', emailCoordenador: '' });
     } catch (error) {
       console.error('Erro ao salvar curso', error);
       setError('Erro ao salvar curso. Tente novamente.');
@@ -92,13 +92,13 @@ const GerenciarCursos = () => {
             </Form.Group>
           </Col>
           <Col md={4}>
-            <Form.Group controlId="formEmailCurso">
+            <Form.Group controlId="formEmailCoordenador">
               <Form.Label>Email da Coordenação</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Digite o email da coordenação"
-                name="email"
-                value={novoCurso.email}
+                name="emailCoordenador"
+                value={novoCurso.emailCoordenador}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -122,7 +122,7 @@ const GerenciarCursos = () => {
             <tr key={curso.idCurso}>
               <td>{curso.nome}</td>
               <td>{curso.sigla}</td>
-              <td>{curso.email}</td>
+              <td>{curso.emailCoordenador}</td>
               <td>
                 <Button variant="warning" onClick={() => handleEdit(curso)} className="mr-2">Editar</Button>
                 <Button variant="danger" onClick={() => handleDelete(curso.idCurso)}>Excluir</Button>
