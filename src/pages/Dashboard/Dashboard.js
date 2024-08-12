@@ -8,7 +8,7 @@ function Dashboard({ role }) {
     <Container className="dashboard">
       <div className="text-center">
         <h1>Bem-vindo(a) ao SIR</h1>
-        <p>Sistema Integrado de Requerimentos</p>
+        <p>Sistema de Requerimentos</p>
       </div>
       <Row className="justify-content-center">
         {role === 'Estudante' && (

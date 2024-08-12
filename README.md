@@ -1,6 +1,6 @@
-# Sistema Integrado de Requerimentos (SIR)
+# Sistema de Requerimentos (SIR)
 
-Este é o Sistema Integrado de Requerimentos (SIR), um aplicativo web que permite aos usuários gerenciar solicitações de ajuste de matrícula.
+Este é o Sistema de Requerimentos (SIR), um aplicativo web que permite aos usuários gerenciar solicitações de ajuste de matrícula.
 
 ## Estrutura do Projeto
 

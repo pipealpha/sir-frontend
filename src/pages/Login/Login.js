@@ -38,7 +38,7 @@ const Login = ({ setRole }) => {
   return (
     <Container className="login-container">
       <div className="login-form">
-        <h2>Sistema Integrado de Requerimentos</h2>
+        <h2>Sistema de Requerimentos</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="formEmail" className="form-group">
