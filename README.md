@@ -18,7 +18,7 @@ O projeto está organizado seguindo um padrão de Feature-Based Folder Structure
 
 1. Clone o repositório:
    ```sh
-   git clone https://github.com/pipealpha/IntegratedRequestsSystem.git
+   git clone https://github.com/pipealpha/sir-frontend.git
    cd IntegratedRequestsSystem
 
 2. Instale as dependências:
